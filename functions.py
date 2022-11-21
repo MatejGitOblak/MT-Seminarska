@@ -19,7 +19,7 @@ def izrisi_odjemalci_Slovenija(odjemalci, leto):
     for k,v in obcine.items():
         koncni_dict[k] = dict_porab[v]
     
-    return pd.DataFrame.from_dict(koncni_dict)
+    return pd.DataFrame.from_dict(koncni_dict).transpose()
 
 
 def izrisi_odjemalci_gospodinjstva(odjemalci, leto):
@@ -41,7 +41,7 @@ def izrisi_odjemalci_gospodinjstva(odjemalci, leto):
     for k,v in obcine.items():
         koncni_dict[k] = dict_porab[v]
 
-    return pd.DataFrame.from_dict(koncni_dict)
+    return pd.DataFrame.from_dict(koncni_dict).transpose()
 
 def izrisi_odjemalci_poslovni_objekti(odjemalci, leto):
     df_odjemalci = odjemalci.copy()
@@ -62,4 +62,4 @@ def izrisi_odjemalci_poslovni_objekti(odjemalci, leto):
     for k,v in obcine.items():
         koncni_dict[k] = dict_porab[v]
 
-    return pd.DataFrame.from_dict(koncni_dict)
+    return pd.DataFrame.from_dict(koncni_dict).transpose()
