@@ -4,7 +4,7 @@ import plotly.express as px
 import pandas as pd
 import geopandas as gpd
 
-slovenia = gpd.read_file('slovenija_map/obcine/obcine.shp', encoding='cp1250')
+
 
 app = Dash(__name__)
 
