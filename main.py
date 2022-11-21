@@ -7,12 +7,19 @@ import geopandas as gpd
 import json
 import numpy as np
 import geojson
+from functions import *
+
+df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
+df_izris = izrisi_odjemalci_Slovenija(df_odjemalci, 2020)
+df_izris = df_izris.sort_index()
 
 map_df = gpd.read_file('slovenija_map/obcine/obcine.shp')
 map_df = map_df.to_crs("WGS84")
 map_df = map_df.rename({'NAZIV': 'District'}, axis = 'columns')
 map_df = map_df.drop(columns = ['EID_OBCINA',  'SIFRA', 'NAZIV_DJ', 'OZNAKA_MES', 'DATUM_SYS'])
-map_df["rand"] = np.random.randint(1, 100, len(map_df))
+map_df = map_df.sort_values('District')
+map_df["rand"] = list(df_izris[0].values)
+map_df = map_df.reset_index(drop=True)
 map_df["geometry"] = (
     map_df.to_crs(map_df.estimate_utm_crs()).simplify(100).to_crs(map_df.crs)
 )
