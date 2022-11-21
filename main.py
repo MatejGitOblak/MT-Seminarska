@@ -27,7 +27,10 @@ fig = px.choropleth(map_df,
                     featureidkey="properties.District"
                    )
 fig.update_geos(fitbounds="locations", visible=False)
-fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        geo=dict(bgcolor= 'rgba(0,0,0,0)'))
 
 app = Dash(__name__)
 

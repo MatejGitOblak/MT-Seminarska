@@ -1,10 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+:root {
+  --shadow1: rgba(150, 150, 150, 0.25) 0px 54px 55px, rgba(150, 150, 150, 0.12) 0px -12px 30px, rgba(150, 150, 150, 0.12) 0px 4px 6px, rgba(150, 150, 150, 0.17) 0px 12px 13px, rgba(150, 150, 150, 0.09) 0px -3px 5px;
+  --shadow2: rgba(255, 255, 255, 0.25) 0px 54px 55px, rgba(255, 255, 255, 0.12) 0px -12px 30px, rgba(255, 255, 255, 0.12) 0px 4px 6px, rgba(255, 255, 255, 0.17) 0px 12px 13px, rgba(255, 255, 255, 0.09) 0px -3px 5px;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   text-align: center;
   margin: 0px;
   height: 100%;
   width: 100%;
+  color: rgb(255, 255, 255);
 }
 body .main-div {
   position: absolute;
@@ -12,6 +18,8 @@ body .main-div {
   right: 0px;
   bottom: 0px;
   left: 0px;
+  background: rgb(49, 39, 126);
+  background: linear-gradient(90deg, rgb(49, 39, 126) 18%, rgb(26, 18, 80) 70%);
   display: grid;
   grid-template-columns: 20% 60% 20%;
   grid-template-rows: 33.3333333333% 33.3333333333% 33.3333333333%;
@@ -19,48 +27,72 @@ body .main-div {
   height: 100%;
 }
 body .main-div .div1 {
-  background: rgb(160, 160, 160);
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 5px;
+  box-shadow: var(--shadow1);
+  background: rgb(13, 7, 48);
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 2;
 }
+body .main-div .div1:hover {
+  box-shadow: var(--shadow2);
+  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
+}
 body .main-div .div2 {
-  background: rgb(160, 160, 160);
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 5px;
+  box-shadow: var(--shadow1);
+  background: rgb(13, 7, 48);
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 2;
   grid-row-end: 3;
 }
+body .main-div .div2:hover {
+  box-shadow: var(--shadow2);
+  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
+}
 body .main-div .div3 {
-  background: rgb(160, 160, 160);
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 5px;
+  box-shadow: var(--shadow1);
+  background: rgb(13, 7, 48);
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 3;
   grid-row-end: 4;
 }
+body .main-div .div3:hover {
+  box-shadow: var(--shadow2);
+  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
+}
 body .main-div .div4 {
-  background: rgb(160, 160, 160);
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 5px;
+  box-shadow: var(--shadow1);
+  background: rgb(13, 7, 48);
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
   grid-column-start: 2;
   grid-column-end: 3;
   grid-row-start: 1;
@@ -70,39 +102,68 @@ body .main-div .div4 .graph {
   height: 100%;
   width: 100%;
 }
+body .main-div .div4 .graph .main-svg {
+  display: block;
+  border-radius: 15px;
+}
+body .main-div .div4:hover {
+  box-shadow: var(--shadow2);
+  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
+}
 body .main-div .div5 {
-  background: rgb(160, 160, 160);
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 5px;
+  box-shadow: var(--shadow1);
+  background: rgb(13, 7, 48);
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
   grid-column-start: 2;
   grid-column-end: 3;
   grid-row-start: 3;
   grid-row-end: 4;
 }
+body .main-div .div5:hover {
+  box-shadow: var(--shadow2);
+  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
+}
 body .main-div .div6 {
-  background: rgb(160, 160, 160);
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 5px;
+  box-shadow: var(--shadow1);
+  background: rgb(13, 7, 48);
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row-start: 1;
   grid-row-end: 3;
 }
+body .main-div .div6:hover {
+  box-shadow: var(--shadow2);
+  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
+}
 body .main-div .div7 {
-  background: rgb(160, 160, 160);
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-  border-radius: 5px;
+  box-shadow: var(--shadow1);
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  background: rgb(13, 7, 48);
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 10px;
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row-start: 3;
   grid-row-end: 4;
+}
+body .main-div .div7:hover {
+  box-shadow: var(--shadow2);
+  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
 }/*# sourceMappingURL=style.css.map */
