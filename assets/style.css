@@ -108,7 +108,6 @@ body .main-div .div4 .graph .main-svg {
 }
 body .main-div .div4:hover {
   box-shadow: var(--shadow2);
-  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
 }
 body .main-div .div5 {
   box-shadow: var(--shadow1);
@@ -129,7 +128,7 @@ body .main-div .div5:hover {
   box-shadow: var(--shadow2);
   text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
 }
-body .main-div .div6 {
+body .main-div .obcine {
   box-shadow: var(--shadow1);
   background: rgb(13, 7, 48);
   display: inline-block;
@@ -144,9 +143,29 @@ body .main-div .div6 {
   grid-row-start: 1;
   grid-row-end: 3;
 }
-body .main-div .div6:hover {
+body .main-div .obcine .obcine1 {
+  overflow: auto;
+  height: 80%;
+}
+body .main-div .obcine .obcine1 .list-group {
+  display: inline-block;
+  text-align: center;
+}
+body .main-div .obcine .obcine1 .list-group .obcina-div {
+  border-radius: 5px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  transition: all 0.2s ease-in-out;
+}
+body .main-div .obcine .obcine1 .list-group .obcina-div:hover {
+  background-color: rgb(51, 51, 51);
+  cursor: pointer;
+}
+body .main-div .obcine .obcine1::-webkit-scrollbar {
+  display: none;
+}
+body .main-div .obcine:hover {
   box-shadow: var(--shadow2);
-  text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
 }
 body .main-div .div7 {
   box-shadow: var(--shadow1);
