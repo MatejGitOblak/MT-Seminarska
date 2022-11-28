@@ -23,6 +23,7 @@ map_df = map_df.reset_index(drop=True)
 map_df["geometry"] = (
     map_df.to_crs(map_df.estimate_utm_crs()).simplify(100).to_crs(map_df.crs)
 )
+
 map_df.to_file('slovenija_map/obcine/obcine.json', driver="GeoJSON") 
 with open('slovenija_map/obcine/obcine.json', encoding="UTF-8") as f:
     data = json.load(f)
@@ -40,6 +41,20 @@ fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
         plot_bgcolor='rgba(0,0,0,0)',
         geo=dict(bgcolor= 'rgba(0,0,0,0)'))
 
+fig1 = px.choropleth(map_df.loc[map_df["District"] == "Ljubljana"],
+                    geojson=data, 
+                    color="Poraba", 
+                    locations="District", 
+                    featureidkey="properties.District",
+                    color_continuous_scale="Sunsetdark"
+                   )
+fig1.update_geos(fitbounds="locations", visible=False)
+fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        geo=dict(bgcolor= 'rgba(0,0,0,0)'),
+        coloraxis_showscale=False)
+
 def generate_list_item(obcina):
     return html.Div(className="obcina-div",
                     children=[
@@ -54,19 +69,30 @@ app = Dash(__name__)
 
 app.layout = html.Div(className="main-div", children=[
     html.Div(className="div1", children=[
-        html.Div("div1")
+        html.Div(children=[
+            html.H2("Izbor podatkov"),
+            dbc.RadioItems(
+                    id='radio',
+                    options=[
+                        {'label': 'Vrsta odjemalca', 'value': 1},
+                        {'label': 'Vrsta dejavnosti', 'value': 2}
+                    ],
+                    value=1,
+                    inline=True
+            )]
+        )
     ]),
     html.Div(className="div2", children=[
         html.Div("div2")
     ]),
     html.Div(className="div3", children=[
-        html.Div("div3")
+        dcc.Graph(className="graph1", id='graph1', figure=fig1, config={'displayModeBar': False})
     ]),
     html.Div(className="div4", children=[
-        dcc.Graph(className="graph", figure=fig)
+        dcc.Graph(className="graph", id='graph', figure=fig, config={'displayModeBar': False})
     ]),
-    html.Div(className="div5", children=[
-        html.Div("div5")
+    html.Div(className="div5", id='div5', children=[
+        dcc.Graph(className="graph2", id='graph2', figure={}, config={'displayModeBar': False})
     ]),
     dbc.Card(className="obcine", children=[
         html.H4("OBČINE"),
@@ -83,6 +109,43 @@ app.layout = html.Div(className="main-div", children=[
         html.Div("div7")
     ])
 ])
+
+@app.callback(
+    [
+        Output('graph2', 'figure'),
+        Output('graph1', 'figure'),
+    ],
+    Input('graph', 'clickData')
+)
+
+def do_smth(figure):
+    global fig1
+    if figure is not None:
+        fig1 = px.choropleth(map_df.loc[map_df["District"] == figure["points"][0]['location']],
+                            geojson=data, 
+                            color="Poraba", 
+                            locations="District", 
+                            featureidkey="properties.District",
+                            color_continuous_scale="Sunsetdark"
+                        )
+        fig1.update_geos(fitbounds="locations", visible=False)
+        fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                geo=dict(bgcolor= 'rgba(0,0,0,0)'),
+                coloraxis_showscale=False)
+
+        d = {'Vrsta': ["Gospodinjstvo", "industrija"],
+             'Poraba': [
+                izrisi_odjemalci_Slovenija(df_odjemalci, 2020)[0][figure["points"][0]['location']],
+                izrisi_odjemalci_poslovni_objekti(df_odjemalci, 2020)[0][figure["points"][0]['location']]
+             ]}
+        df = pd.DataFrame(data=d)
+
+        fig2 = px.bar(df, x='Vrsta', y='Poraba', title=figure["points"][0]['location'])
+        return fig2, fig1
+    else:
+        return {}, fig1
 
 if __name__ == '__main__':
     app.run_server(debug=True)
