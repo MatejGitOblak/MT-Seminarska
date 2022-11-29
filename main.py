@@ -10,7 +10,7 @@ import geojson
 from functions import *
 
 df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
-df_izris = izrisi_odjemalci_Slovenija(df_odjemalci, 2020)
+df_izris = izrisi_odjemalci_gospodinjstva(df_odjemalci, 2020)
 df_izris = df_izris.sort_index()
 
 map_df = gpd.read_file('slovenija_map/obcine/obcine.shp')
@@ -18,12 +18,24 @@ map_df = map_df.to_crs("WGS84")
 map_df = map_df.rename({'NAZIV': 'District'}, axis = 'columns')
 map_df = map_df.drop(columns = ['EID_OBCINA',  'SIFRA', 'NAZIV_DJ', 'OZNAKA_MES', 'DATUM_SYS'])
 map_df = map_df.sort_values('District')
-map_df['District'] = df_izris.index
+
 map_df["Poraba"] = list(df_izris[0].values)
+
+norm_poraba_gosp = izracun_normalizacije_gospodinjstva(map_df, 2021)
+norm_poraba_ind = izracun_normalizacije_poslovni_objekti(map_df, 2021)
+norm_poraba_slo = izracun_normalizacije_Slovenija(map_df, 2021)
+
+map_df["Poraba"] = norm_poraba_gosp["Poraba"]
+
+map_df['District'] = df_izris.index
+
+
 map_df = map_df.reset_index(drop=True)
 map_df["geometry"] = (
     map_df.to_crs(map_df.estimate_utm_crs()).simplify(100).to_crs(map_df.crs)
 )
+
+
 
 map_df.to_file('slovenija_map/obcine/obcine.json', driver="GeoJSON") 
 with open('slovenija_map/obcine/obcine.json', encoding="UTF-8") as f:
@@ -56,15 +68,17 @@ fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
         geo=dict(bgcolor= 'rgba(0,0,0,0)'),
         coloraxis_showscale=False)
 
-def generate_list_item(obcina):
+def generate_list_item(obcina, gosp, ind):
+    st = "Gospodinjstva: %.2f Industrija: %.2f" % (float(gosp), float(ind))
     return html.Div(className="obcina-div",
                     children=[
                                 html.H3(obcina),
-                                html.P("info")
+                                html.P(st)
                             ])
 
-li = list(df_izris.index)
-
+li1 = list(df_izris.index)
+li2 = list(norm_poraba_ind["Poraba"])
+li3 = list(norm_poraba_gosp["Poraba"])
 
 app = Dash(__name__)
 
@@ -101,7 +115,7 @@ app.layout = html.Div(className="main-div", children=[
         [
             html.Div(
                 className="list-group",
-                children=[generate_list_item(i) for i in li],
+                children=[generate_list_item(li1[i], li2[i], li3[i]) for i in range(len(li1))],
             ),
         ]
         ),
@@ -137,13 +151,13 @@ def do_smth(figure):
                 coloraxis_showscale=False)
 
         d = {'Vrsta': ["Gospodinjstvo", "industrija"],
-             'Poraba': [
-                izrisi_odjemalci_Slovenija(df_odjemalci, 2020)[0][figure["points"][0]['location']],
-                izrisi_odjemalci_poslovni_objekti(df_odjemalci, 2020)[0][figure["points"][0]['location']]
+             'Poraba v MWh': [
+                izrisi_odjemalci_Slovenija(df_odjemalci, 2020)[0][figure["points"][0]['location']]/1000,
+                izrisi_odjemalci_poslovni_objekti(df_odjemalci, 2020)[0][figure["points"][0]['location']]/1000
              ]}
         df = pd.DataFrame(data=d)
 
-        fig2 = px.bar(df, x='Poraba', y='Vrsta', title=figure["points"][0]['location'], orientation='h')
+        fig2 = px.bar(df, x='Poraba v MWh', y='Vrsta', title=figure["points"][0]['location'], orientation='h')
         return fig2, fig1
     else:
         return {}, fig1

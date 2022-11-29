@@ -155,6 +155,9 @@ body .main-div .obcine .obcine1 .list-group .obcina-div {
   padding-bottom: 1px;
   transition: all 0.2s ease-in-out;
 }
+body .main-div .obcine .obcine1 .list-group .obcina-div p {
+  font-size: calc(0.5vmax + 0.5vmin);
+}
 body .main-div .obcine .obcine1 .list-group .obcina-div:hover {
   background-color: rgb(136, 136, 136);
   cursor: pointer;
