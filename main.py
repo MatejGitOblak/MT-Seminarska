@@ -18,6 +18,7 @@ map_df = map_df.to_crs("WGS84")
 map_df = map_df.rename({'NAZIV': 'District'}, axis = 'columns')
 map_df = map_df.drop(columns = ['EID_OBCINA',  'SIFRA', 'NAZIV_DJ', 'OZNAKA_MES', 'DATUM_SYS'])
 map_df = map_df.sort_values('District')
+map_df['District'] = df_izris.index
 map_df["Poraba"] = list(df_izris[0].values)
 map_df = map_df.reset_index(drop=True)
 map_df["geometry"] = (
@@ -142,7 +143,7 @@ def do_smth(figure):
              ]}
         df = pd.DataFrame(data=d)
 
-        fig2 = px.bar(df, x='Vrsta', y='Poraba', title=figure["points"][0]['location'])
+        fig2 = px.bar(df, x='Poraba', y='Vrsta', title=figure["points"][0]['location'], orientation='h')
         return fig2, fig1
     else:
         return {}, fig1
