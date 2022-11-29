@@ -1,5 +1,10 @@
 import pandas as pd
 
+df_prebivalci = pd.read_csv("data/podatki_starost_prebivalcev.csv", delimiter=",", encoding="windows-1250")
+df_dejavnosti = pd.read_csv("data/podatki_po_dejavnostih.csv", delimiter=",", encoding="windows-1250")
+df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
+
+
 def izrisi_odjemalci_Slovenija(odjemalci, leto):
     df_odjemalci = odjemalci.copy()
     df=df_odjemalci[::+3]
@@ -79,23 +84,49 @@ def uredi_data_prebivalci(prebivalci_data, mapdf):
 
     return df
 
-def izracun_normalizacije_Slovenija(df, urejeni, mapdf):
+def izracun_normalizacije_Slovenija(mapdf, leto):
+    global df_prebivalci, df_odjemalci
+
+    urejeni = uredi_data_prebivalci(df_prebivalci, mapdf)
+    df = izrisi_odjemalci_Slovenija(df_odjemalci, leto)
+    df.insert(0,'District', df.index)
     df.index = mapdf.index
-    df.insert(0,'District', mapdf["District"])
-    df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
-    df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+    if leto == 2020:
+        df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+    elif leto == 2021:
+        df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+
+    df = df.drop(columns={0})
     return df
 
-def izracun_normalizacije_gospodinjstva(df, urejeni, mapdf):
+def izracun_normalizacije_gospodinjstva(mapdf, leto):
+    global df_prebivalci, df_odjemalci
+
+    urejeni = uredi_data_prebivalci(df_prebivalci, mapdf)
+    df = izrisi_odjemalci_gospodinjstva(df_odjemalci, leto)
+
+    df.insert(0,'District', df.index)
     df.index = mapdf.index
-    df.insert(0,'District', mapdf["District"])
-    df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
-    df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+    if leto == 2020:
+        df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+    elif leto == 2021:
+        df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+
+    df = df.drop(columns={0})
     return df
 
-def izracun_normalizacije_poslovni_objekti(df, urejeni, mapdf):
+def izracun_normalizacije_poslovni_objekti(mapdf, leto):
+    global df_prebivalci, df_odjemalci
+
+    urejeni = uredi_data_prebivalci(df_prebivalci, mapdf)
+    df = izrisi_odjemalci_poslovni_objekti(df_odjemalci, leto)
+    
+    df.insert(0,'District', df.index)
     df.index = mapdf.index
-    df.insert(0,'District', mapdf["District"])
-    df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
-    df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+    if leto == 2020:
+        df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+    elif leto == 2021:
+        df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+
+    df = df.drop(columns={0})
     return df
