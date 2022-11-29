@@ -9,8 +9,10 @@ import numpy as np
 import geojson
 from functions import *
 
+
 df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
 df_izris = izrisi_odjemalci_Slovenija(df_odjemalci, 2020)
+df_izris = uredi_data_prebivalci()
 df_izris = df_izris.sort_index()
 
 map_df = gpd.read_file('slovenija_map/obcine/obcine.shp')
