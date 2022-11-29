@@ -63,3 +63,39 @@ def izrisi_odjemalci_poslovni_objekti(odjemalci, leto):
         koncni_dict[k] = dict_porab[v]
 
     return pd.DataFrame.from_dict(koncni_dict).transpose()
+
+
+def uredi_data_prebivalci(prebivalci_data, mapdf):
+    df = prebivalci_data.copy()
+    df = df.rename({'OBČINE': 'District'}, axis = 'columns')
+    df = df.drop(df.index[0])
+
+    df.index = mapdf.index
+    df["District"] = mapdf["District"]
+
+    df["2020_skupaj"] = ((df["2020H1 Starost - SKUPAJ"] + df["2020H2 Starost - SKUPAJ"]) / 2).astype(int)
+    df["2021_skupaj"] = ((df["2021H1 Starost - SKUPAJ"] + df["2021H2 Starost - SKUPAJ"]) / 2).astype(int)
+    df = df.drop(columns = ["2021H1 Starost - SKUPAJ",  '2021H2 Starost - SKUPAJ', '2020H1 Starost - SKUPAJ', '2020H2 Starost - SKUPAJ'])
+
+    return df
+
+def izracun_normalizacije_Slovenija(df, urejeni, mapdf):
+    df.index = mapdf.index
+    df.insert(0,'District', mapdf["District"])
+    df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+    df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+    return df
+
+def izracun_normalizacije_gospodinjstva(df, urejeni, mapdf):
+    df.index = mapdf.index
+    df.insert(0,'District', mapdf["District"])
+    df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+    df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+    return df
+
+def izracun_normalizacije_poslovni_objekti(df, urejeni, mapdf):
+    df.index = mapdf.index
+    df.insert(0,'District', mapdf["District"])
+    df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+    df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+    return df
