@@ -92,9 +92,9 @@ def izracun_normalizacije_Slovenija(mapdf, leto):
     df.insert(0,'District', df.index)
     df.index = mapdf.index
     if leto == 2020:
-        df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+        df["Poraba"] = round(df[0] / urejeni["2020_skupaj"],2)
     elif leto == 2021:
-        df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+        df["Poraba"] = round(df[0] / urejeni["2021_skupaj"],2)
 
     df = df.drop(columns={0})
     return df
@@ -108,9 +108,9 @@ def izracun_normalizacije_gospodinjstva(mapdf, leto):
     df.insert(0,'District', df.index)
     df.index = mapdf.index
     if leto == 2020:
-        df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+        df["Poraba"] = round(df[0] / urejeni["2020_skupaj"],2)
     elif leto == 2021:
-        df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+        df["Poraba"] = round(df[0] / urejeni["2021_skupaj"],2)
 
     df = df.drop(columns={0})
     return df
@@ -120,13 +120,13 @@ def izracun_normalizacije_poslovni_objekti(mapdf, leto):
 
     urejeni = uredi_data_prebivalci(df_prebivalci, mapdf)
     df = izrisi_odjemalci_poslovni_objekti(df_odjemalci, leto)
-    
+
     df.insert(0,'District', df.index)
     df.index = mapdf.index
     if leto == 2020:
-        df["Normalizacija_2020"] = round(df[0] / urejeni["2020_skupaj"],2)
+        df["Poraba"] = round(df[0] / urejeni["2020_skupaj"],2)
     elif leto == 2021:
-        df["Normalizacija_2021"] = round(df[0] / urejeni["2021_skupaj"],2)
+        df["Poraba"] = round(df[0] / urejeni["2021_skupaj"],2)
 
     df = df.drop(columns={0})
     return df
