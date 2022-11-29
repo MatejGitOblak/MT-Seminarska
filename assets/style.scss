@@ -1,16 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 :root {
+    --background1: #F9FAFC;
+    --background2: #FFFFFF;
     --shadow1: rgba(150, 150, 150, 0.25) 0px 54px 55px, rgba(150, 150, 150, 0.12) 0px -12px 30px, rgba(150, 150, 150, 0.12) 0px 4px 6px, rgba(150, 150, 150, 0.17) 0px 12px 13px, rgba(150, 150, 150, 0.09) 0px -3px 5px;
-    --shadow2: rgba(255, 255, 255, 0.25) 0px 54px 55px, rgba(255, 255, 255, 0.12) 0px -12px 30px, rgba(255, 255, 255, 0.12) 0px 4px 6px, rgba(255, 255, 255, 0.17) 0px 12px 13px, rgba(255, 255, 255, 0.09) 0px -3px 5px;
+    --shadow2: rgba(94, 94, 94, 0.25) 0px 54px 55px, rgba(94, 94, 94, 0.25) 0px -12px 30px, rgba(94, 94, 94, 0.25) 0px 4px 6px, rgba(94, 94, 94, 0.25) 0px 12px 13px, rgba(94, 94, 94, 0.25) 0px -3px 5px;
 }
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: Poppins,sans-serif;
     text-align: center;
     margin: 0px;
     height: 100%;
     width: 100%;
 
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
 
     
 
@@ -21,8 +23,7 @@ body {
         bottom:0px;
         left:0px;
 
-        background: rgb(49,39,126);
-        background: linear-gradient(90deg, rgba(49,39,126,1) 18%, rgba(26,18,80,1) 70%);
+        background: var(--background1);
         
         display: grid;
         grid-template-columns: 20% 60% 20%;
@@ -32,7 +33,7 @@ body {
 
         .div1 {
             box-shadow: var(--shadow1);
-            background: rgb(13,7,48);
+            background: var(--background1);
             display: inline-block;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
@@ -48,11 +49,10 @@ body {
         }
         .div1:hover {
             box-shadow: var(--shadow2);
-            text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
         }
         .div2 {
             box-shadow: var(--shadow1);
-            background: rgb(13,7,48);
+            background: var(--background1);
             display: inline-block;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
@@ -68,11 +68,10 @@ body {
         }
         .div2:hover {
             box-shadow: var(--shadow2);
-            text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
         }
         .div3 {
             box-shadow: var(--shadow1);
-            background: rgb(13,7,48);
+            background: var(--background1);
             display: inline-block;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
@@ -85,14 +84,15 @@ body {
             grid-column-end: 2;
             grid-row-start: 3;
             grid-row-end: 4;
+
+            .graph1 {
+                height: 100%;
+            }
         }
         .div3:hover {
             box-shadow: var(--shadow2);
-            text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
         }
         .div4 {
-            box-shadow: var(--shadow1);
-            background: rgb(13,7,48);
             display: inline-block;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
@@ -117,12 +117,9 @@ body {
                 }
             }
         }
-        .div4:hover {
-            box-shadow: var(--shadow2);
-        }
         .div5 {
             box-shadow: var(--shadow1);
-            background: rgb(13,7,48);
+            background: var(--background1);
             display: inline-block;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
@@ -135,14 +132,17 @@ body {
             grid-column-end: 3;
             grid-row-start: 3;
             grid-row-end: 4;
+
+            .graph2 {
+                height: 100%;
+            }
         }
         .div5:hover {
             box-shadow: var(--shadow2);
-            text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
         }
         .obcine {
             box-shadow: var(--shadow1);
-            background: rgb(13,7,48);
+            background: var(--background1);
             display: inline-block;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
@@ -172,7 +172,7 @@ body {
                     }
 
                     .obcina-div:hover {
-                          background-color: rgb(51, 51, 51);
+                          background-color: rgb(136, 136, 136);
                           cursor: pointer;
                     }
                 }
@@ -192,7 +192,7 @@ body {
             box-shadow: var(--shadow1);
             display: inline-block;
             transition: all 0.2s ease-in-out;
-            background: rgb(13,7,48);
+            background: var(--background1);
             margin-top: 15px;
             margin-bottom: 15px;
             margin-left: 15px;
@@ -206,7 +206,6 @@ body {
         }
         .div7:hover {
             box-shadow: var(--shadow2);
-            text-shadow: 0 0 5px rgb(0, 204, 255), 0 0 5px rgb(0, 204, 255);
         }
     }
 }
