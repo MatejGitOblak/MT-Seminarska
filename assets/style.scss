@@ -65,6 +65,29 @@ body {
             grid-column-end: 2;
             grid-row-start: 2;
             grid-row-end: 3;
+
+            .stat-podatki {
+                display: grid;
+                width: 100%;
+                grid-template-columns: 50% 50%;
+                text-align: center;
+
+                .stat-podatki1 {
+                    grid-column-start: 1;
+                    grid-column-end: 2;
+
+                    display: inline-block;
+    
+                }
+
+                .stat-podatki2 {
+                    grid-column-start: 2;
+                    grid-column-end: 3;
+
+                    display: inline-block;
+                }
+
+            }
         }
         .div2:hover {
             box-shadow: var(--shadow2);
@@ -207,6 +230,10 @@ body {
             grid-column-end: 4;
             grid-row-start: 3;
             grid-row-end: 4;
+
+            .graph3 {
+                height: 100%;
+            }
         }
         .div7:hover {
             box-shadow: var(--shadow2);

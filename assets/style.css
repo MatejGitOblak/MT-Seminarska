@@ -60,6 +60,22 @@ body .main-div .div2 {
   grid-row-start: 2;
   grid-row-end: 3;
 }
+body .main-div .div2 .stat-podatki {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 50% 50%;
+  text-align: center;
+}
+body .main-div .div2 .stat-podatki .stat-podatki1 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  display: inline-block;
+}
+body .main-div .div2 .stat-podatki .stat-podatki2 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  display: inline-block;
+}
 body .main-div .div2:hover {
   box-shadow: var(--shadow2);
 }
@@ -182,6 +198,9 @@ body .main-div .div7 {
   grid-column-end: 4;
   grid-row-start: 3;
   grid-row-end: 4;
+}
+body .main-div .div7 .graph3 {
+  height: 100%;
 }
 body .main-div .div7:hover {
   box-shadow: var(--shadow2);

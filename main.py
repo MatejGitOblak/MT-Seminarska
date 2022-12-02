@@ -94,7 +94,19 @@ app.layout = html.Div(className="main-div", children=[
         )
     ]),
     html.Div(className="div2", children=[
-        html.Div("Statistični podatki")
+        html.Div("Statistični podatki"),
+        html.Div(className="stat-podatki", children=[
+            html.Div(className="stat-podatki1", children=[
+                html.H4("Občina 1"),
+                html.H6("Poraba: 40294kWh"),
+                html.H6("Poraba/prebivalec: 544kWh")
+            ]),
+            html.Div(className="stat-podatki2", children=[
+                html.H4("Občina 2"),
+                html.H6("Poraba: 54294kWh"),
+                html.H6("Poraba/previbalec: 724kWh")
+            ])
+        ])
     ]),
     html.Div(className="div3", children=[
         dcc.Graph(className="graph1", id='graph1', figure=fig1, config={'displayModeBar': False})
@@ -117,7 +129,7 @@ app.layout = html.Div(className="main-div", children=[
         ),
     ]),
     html.Div(className="div7", children=[
-        html.Div("Občina 2")
+        dcc.Graph(className="graph3", id='graph3', figure=fig1, config={'displayModeBar': False})
     ])
 ])
 
