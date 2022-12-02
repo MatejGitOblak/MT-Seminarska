@@ -7,35 +7,18 @@ import geopandas as gpd
 import json
 import numpy as np
 import geojson
-from functions import *
+from functions1 import *
 
-df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
-df_izris = izrisi_odjemalci_gospodinjstva(df_odjemalci, 2020)
-df_izris = df_izris.sort_index()
+odjemalci_dict = load_and_preprocess_odjemalci()
 
-map_df = gpd.read_file('slovenija_map/obcine/obcine.shp')
-map_df = map_df.to_crs("WGS84")
-map_df = map_df.rename({'NAZIV': 'District'}, axis = 'columns')
-map_df = map_df.drop(columns = ['EID_OBCINA',  'SIFRA', 'NAZIV_DJ', 'OZNAKA_MES', 'DATUM_SYS'])
-map_df = map_df.sort_values('District')
+map_df = odjemalci_dict['df_map']
 
-map_df["Poraba"] = list(df_izris[0].values)
-
-norm_poraba_gosp = izracun_normalizacije_gospodinjstva(map_df, 2021)
-norm_poraba_ind = izracun_normalizacije_poslovni_objekti(map_df, 2021)
-norm_poraba_slo = izracun_normalizacije_Slovenija(map_df, 2021)
-
-map_df["Poraba"] = norm_poraba_gosp["Poraba"]
-
-map_df['District'] = df_izris.index
-
+map_df["Poraba"] = odjemalci_dict['gospodinjstvo_norm']['Poraba']
 
 map_df = map_df.reset_index(drop=True)
 map_df["geometry"] = (
     map_df.to_crs(map_df.estimate_utm_crs()).simplify(100).to_crs(map_df.crs)
 )
-
-
 
 map_df.to_file('slovenija_map/obcine/obcine.json', driver="GeoJSON") 
 with open('slovenija_map/obcine/obcine.json', encoding="UTF-8") as f:
@@ -68,6 +51,19 @@ fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
         geo=dict(bgcolor= 'rgba(0,0,0,0)'),
         coloraxis_showscale=False)
 
+d = {'Vrsta': ["Gospodinjstvo", "industrija"],
+        'Poraba v MWh': [
+        odjemalci_dict['gospodinjstvo']['Poraba'].loc[odjemalci_dict['gospodinjstvo']['OBČINE'] == 'Ljubljana'].values[0]/1000,
+        odjemalci_dict['industrija']['Poraba'].loc[odjemalci_dict['industrija']['OBČINE'] == 'Ljubljana'].values[0]/1000
+        ]}
+df = pd.DataFrame(data=d)
+
+fig2 = px.bar(df, x='Poraba v MWh', y='Vrsta', title='Ljubljana', orientation='h')
+
+fig2.update_layout(
+    xaxis_tickformat =',d',
+)
+
 def generate_list_item(obcina, gosp, ind):
     st = "Gospodinjstva: %.2f Industrija: %.2f" % (float(gosp), float(ind))
     return html.Div(className="obcina-div",
@@ -76,9 +72,9 @@ def generate_list_item(obcina, gosp, ind):
                                 html.P(st)
                             ])
 
-li1 = list(df_izris.index)
-li2 = list(norm_poraba_ind["Poraba"])
-li3 = list(norm_poraba_gosp["Poraba"])
+li1 = list(odjemalci_dict['skupaj']['OBČINE'])
+li2 = list(odjemalci_dict['gospodinjstvo']["Poraba"]/1000)
+li3 = list(odjemalci_dict['industrija']["Poraba"]/1000)
 
 app = Dash(__name__)
 
@@ -98,7 +94,7 @@ app.layout = html.Div(className="main-div", children=[
         )
     ]),
     html.Div(className="div2", children=[
-        html.Div("div2")
+        html.Div("Statistični podatki")
     ]),
     html.Div(className="div3", children=[
         dcc.Graph(className="graph1", id='graph1', figure=fig1, config={'displayModeBar': False})
@@ -107,7 +103,7 @@ app.layout = html.Div(className="main-div", children=[
         dcc.Graph(className="graph", id='graph', figure=fig, config={'displayModeBar': False})
     ]),
     html.Div(className="div5", id='div5', children=[
-        dcc.Graph(className="graph2", id='graph2', figure={}, config={'displayModeBar': False})
+        dcc.Graph(className="graph2", id='graph2', figure=fig2, config={'displayModeBar': False})
     ]),
     dbc.Card(className="obcine", children=[
         html.H4("OBČINE"),
@@ -121,7 +117,7 @@ app.layout = html.Div(className="main-div", children=[
         ),
     ]),
     html.Div(className="div7", children=[
-        html.Div("div7")
+        html.Div("Občina 2")
     ])
 ])
 
@@ -152,12 +148,15 @@ def do_smth(figure):
 
         d = {'Vrsta': ["Gospodinjstvo", "industrija"],
              'Poraba v MWh': [
-                izrisi_odjemalci_Slovenija(df_odjemalci, 2020)[0][figure["points"][0]['location']]/1000,
-                izrisi_odjemalci_poslovni_objekti(df_odjemalci, 2020)[0][figure["points"][0]['location']]/1000
+                odjemalci_dict['gospodinjstvo']['Poraba'].loc[odjemalci_dict['gospodinjstvo']['OBČINE'] == figure["points"][0]['location']].values[0]/1000,
+                odjemalci_dict['industrija']['Poraba'].loc[odjemalci_dict['industrija']['OBČINE'] == figure["points"][0]['location']].values[0]/1000
              ]}
         df = pd.DataFrame(data=d)
 
         fig2 = px.bar(df, x='Poraba v MWh', y='Vrsta', title=figure["points"][0]['location'], orientation='h')
+        fig2.update_layout(
+            xaxis_tickformat =',d',
+        )
         return fig2, fig1
     else:
         return {}, fig1
