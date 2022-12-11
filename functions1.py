@@ -8,14 +8,7 @@ import json
 import geojson
 import math
 
-df_map_slovenija = None
-df_dejavnosti = None
-df_odjemalci = None
-df_starost_prebivalcev = None
-
 def load_and_preprocess_odjemalci():
-    global df_dejavnosti, df_odjemalci, df_starost_prebivalcev, df_map_slovenija
-
     df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
     df_starost_prebivalcev = pd.read_csv("data/podatki_starost_prebivalcev.csv", delimiter=",", encoding="windows-1250")
 
@@ -74,3 +67,13 @@ def load_and_preprocess_odjemalci():
     }
 
     return odjemalci_dict
+
+def load_and_preprocess_dejavnosti():
+    df_dejavnosti = pd.read_csv("data/podatki_dejavnosti.csv", delimiter=",", encoding="windows-1250")
+    dejavnosti_dict = {}
+
+    for i in range(23, 45):
+        df = df_dejavnosti[i:-i:+i]
+        dejavnosti_dict[str(df_dejavnosti.iloc[i]['SKD DEJAVNOST'])[2:]] = df
+
+    return dejavnosti_dict
