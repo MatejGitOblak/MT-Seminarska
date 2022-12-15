@@ -21,7 +21,7 @@ def izrisi_dejavnosti_obcine():
             obcine.add(record['OBČINE'].split("/")[0])
         else:
             obcine.add(record['OBČINE'])
-        dejavnosti.add(record['SKD DEJAVNOST'])
+        dejavnosti.add(record['SKD DEJAVNOST'][2:])
 
     dejavnosti_obcine = dict()
     # 24 polj zacne se z januar 2020 konca z december 2021
