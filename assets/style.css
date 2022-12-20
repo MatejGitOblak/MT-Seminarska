@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 :root {
   --background1: #F9FAFC;
@@ -30,7 +31,8 @@ body .main-div {
 body .main-div .div1 {
   box-shadow: var(--shadow1);
   background: var(--background1);
-  display: inline-block;
+  display: grid;
+  grid-template-rows: 20% 80%;
   transition: all 0.2s ease-in-out;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -41,6 +43,22 @@ body .main-div .div1 {
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 2;
+}
+body .main-div .div1 .div1-izbira {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+body .main-div .div1 .izbira-podatkov {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  display: none;
+}
+body .main-div .div1 .izbira-občine {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  display: inline-block;
 }
 body .main-div .div1:hover {
   box-shadow: var(--shadow2);
@@ -82,7 +100,8 @@ body .main-div .div2:hover {
 body .main-div .div3 {
   box-shadow: var(--shadow1);
   background: var(--background1);
-  display: inline-block;
+  display: grid;
+  grid-template-rows: 20% 80%;
   transition: all 0.2s ease-in-out;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -94,14 +113,21 @@ body .main-div .div3 {
   grid-row-start: 3;
   grid-row-end: 4;
 }
+body .main-div .div3 .h3 {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
 body .main-div .div3 .graph1 {
+  grid-row-start: 2;
+  grid-row-end: 3;
   height: 100%;
 }
 body .main-div .div3:hover {
   box-shadow: var(--shadow2);
 }
 body .main-div .div4 {
-  display: inline-block;
+  display: grid;
+  grid-template-rows: 10% 90%;
   transition: all 0.2s ease-in-out;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -116,10 +142,14 @@ body .main-div .div4 {
   grid-row-start: 1;
   grid-row-end: 3;
 }
+body .main-div .div4 h3 {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
 body .main-div .div4 .graph {
-  margin-top: 20px;
+  grid-row-start: 2;
+  grid-row-end: 3;
   display: inline-block;
-  transform: scale(1.2, 1.3);
 }
 body .main-div .div5 {
   box-shadow: var(--shadow1);
@@ -186,7 +216,8 @@ body .main-div .obcine:hover {
 }
 body .main-div .div7 {
   box-shadow: var(--shadow1);
-  display: inline-block;
+  display: grid;
+  grid-template-rows: 20% 80%;
   transition: all 0.2s ease-in-out;
   background: var(--background1);
   margin-top: 15px;
@@ -199,7 +230,13 @@ body .main-div .div7 {
   grid-row-start: 3;
   grid-row-end: 4;
 }
+body .main-div .div7 .h3 {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
 body .main-div .div7 .graph3 {
+  grid-row-start: 2;
+  grid-row-end: 3;
   height: 100%;
 }
 body .main-div .div7:hover {

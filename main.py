@@ -11,6 +11,10 @@ from functions1 import *
 import copy
 import plotly.graph_objects as go
 
+izbrana_obcina = 'Ljubljana'
+ime_obcina1 = 'Ljubljana'
+ime_obcina2 = 'Ljubljana'
+
 odjemalci_dict = load_and_preprocess_odjemalci()
 dejavnosti_dict = load_and_preprocess_dejavnosti()
 
@@ -41,15 +45,29 @@ fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
         geo=dict(bgcolor= 'rgba(0,0,0,0)'),
         )
 
-fig1 = px.choropleth(map_df.loc[map_df["District"] == "Ljubljana"],
+obcina1 = px.choropleth(map_df.loc[map_df["District"] == "Ljubljana"],
                     geojson=data, 
                     color="Poraba", 
                     locations="District", 
                     featureidkey="properties.District",
                     color_continuous_scale="Sunsetdark"
                    )
-fig1.update_geos(fitbounds="locations", visible=False)
-fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+obcina1.update_geos(fitbounds="locations", visible=False)
+obcina1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        geo=dict(bgcolor= 'rgba(0,0,0,0)'),
+        coloraxis_showscale=False,)
+
+obcina2 = px.choropleth(map_df.loc[map_df["District"] == "Ljubljana"],
+                    geojson=data, 
+                    color="Poraba", 
+                    locations="District", 
+                    featureidkey="properties.District",
+                    color_continuous_scale="Sunsetdark"
+                   )
+obcina2.update_geos(fitbounds="locations", visible=False)
+obcina2.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         geo=dict(bgcolor= 'rgba(0,0,0,0)'),
@@ -82,13 +100,29 @@ app = Dash(__name__)
 
 app.layout = html.Div(className="main-div", children=[
     html.Div(className="div1", children=[
-        html.Div(children=[
+        html.Div(className="div1-izbira", children=[
+            html.Button(id="podatki", className="podatki", children=["Izbor podatkov"]),
+            html.Button(id="občine", className="občine", children=["Primerjava občin"]),
+        ]),
+        html.Div(id="izbira-podatkov", className="izbira-podatkov", children=[
             html.H2("Izbor podatkov"),
             dbc.RadioItems(
                     id='radio',
                     options=[
                         {'label': 'Vrsta odjemalca', 'value': 1},
                         {'label': 'Vrsta dejavnosti', 'value': 2}
+                    ],
+                    value=1,
+                    inline=True
+            )]
+        ),
+        html.Div(id="izbira-občine", className="izbira-občine", children=[
+            html.H2("Primerjava občine"),
+            dbc.RadioItems(
+                    id='radio-občine',
+                    options=[
+                        {'label': 'Občina 1', 'value': 1},
+                        {'label': 'Občina 2', 'value': 2}
                     ],
                     value=1,
                     inline=True
@@ -111,9 +145,11 @@ app.layout = html.Div(className="main-div", children=[
         ])
     ]),
     html.Div(className="div3", children=[
-        dcc.Graph(className="graph1", id='graph1', figure=fig1, config={'displayModeBar': False})
+        html.H3(id="obcina-ime1", children=["Ljubljana"]),
+        dcc.Graph(className="graph1", id='graph1', figure=obcina1, config={'displayModeBar': False})
     ]),
     html.Div(className="div4", children=[
+        html.H3(children=["Slovenija"]),
         dcc.Graph(className="graph", id='graph', figure=fig, config={'displayModeBar': False})
     ]),
     html.Div(className="div5", id='div5', children=[
@@ -135,7 +171,8 @@ app.layout = html.Div(className="main-div", children=[
         ),
     ]),
     html.Div(className="div7", children=[
-        dcc.Graph(className="graph3", id='graph3', figure=fig1, config={'displayModeBar': False})
+        html.H3(id="obcina-ime2", children=["Ljubljana"]),
+        dcc.Graph(className="graph3", id='graph3', figure=obcina2, config={'displayModeBar': False})
     ])
 ])
 
@@ -143,26 +180,54 @@ app.layout = html.Div(className="main-div", children=[
     [
         Output('graph2', 'figure'),
         Output('graph1', 'figure'),
+        Output('graph3', 'figure'),
+        Output('obcina-ime1', 'children'),
+        Output('obcina-ime2', 'children')
     ],
-    Input('graph', 'clickData')
+    [
+        Input('graph', 'clickData'),
+        Input('radio-občine', 'value')
+    ]
 )
 
-def do_smth(figure):
-    global fig1
+def do_smth(figure, radio):
+    global obcina1, obcina2, izbrana_obcina, ime_obcina1, ime_obcina2
+    
     if figure is not None:
-        fig1 = px.choropleth(map_df.loc[map_df["District"] == figure["points"][0]['location']],
-                            geojson=data, 
-                            color="Poraba", 
-                            locations="District", 
-                            featureidkey="properties.District",
-                            color_continuous_scale="Sunsetdark"
-                        )
-        fig1.update_geos(fitbounds="locations", visible=False)
-        fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                geo=dict(bgcolor= 'rgba(0,0,0,0)'),
-                coloraxis_showscale=False)
+        if figure['points'][0]['location'] != izbrana_obcina:
+            if radio == 1:
+                obcina1 = px.choropleth(map_df.loc[map_df["District"] == figure["points"][0]['location']],
+                                    geojson=data, 
+                                    color="Poraba", 
+                                    locations="District", 
+                                    featureidkey="properties.District",
+                                    color_continuous_scale="Sunsetdark"
+                                )
+                obcina1.update_geos(fitbounds="locations", visible=False)
+                obcina1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+                        paper_bgcolor='rgba(0,0,0,0)',
+                        plot_bgcolor='rgba(0,0,0,0)',
+                        geo=dict(bgcolor= 'rgba(0,0,0,0)'),
+                        coloraxis_showscale=False)
+
+                ime_obcina1 = figure["points"][0]['location']
+
+            if radio == 2:
+                obcina2 = px.choropleth(map_df.loc[map_df["District"] == figure["points"][0]['location']],
+                                    geojson=data, 
+                                    color="Poraba", 
+                                    locations="District", 
+                                    featureidkey="properties.District",
+                                    color_continuous_scale="Sunsetdark"
+                                )
+                obcina2.update_geos(fitbounds="locations", visible=False)
+                obcina2.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+                        paper_bgcolor='rgba(0,0,0,0)',
+                        plot_bgcolor='rgba(0,0,0,0)',
+                        geo=dict(bgcolor= 'rgba(0,0,0,0)'),
+                        coloraxis_showscale=False)
+
+                ime_obcina2 = figure["points"][0]['location']
 
         d = {'Vrsta': ["Gospodinjstvo", "industrija"],
              'Poraba v MWh': [
@@ -175,9 +240,39 @@ def do_smth(figure):
         fig2.update_layout(
             xaxis_tickformat =',d',
         )
-        return fig2, fig1
+        izbrana_obcina = figure['points'][0]['location']
+        return fig2, obcina1, obcina2, ime_obcina1, ime_obcina2
     else:
-        return {}, fig1
+        return {}, obcina1, obcina2, ime_obcina1, ime_obcina2
+
+@app.callback(
+    [
+        Output('izbira-podatkov', 'style'),
+        Output('izbira-občine', 'style'),
+        Output('podatki', 'n_clicks'),
+        Output('občine', 'n_clicks')
+    ],
+    [
+        Input('podatki', 'n_clicks'),
+        Input('občine', 'n_clicks')
+    ]
+)
+
+def change_style(podatki, občine):
+    if podatki is not None:
+        if podatki == 1:
+            podatki = 0
+            return {'display': 'inline-block'}, {'display': 'none'}, 0, 0
+
+    if občine is not None:
+        if občine == 1:
+            občine = 0
+            return {'display': 'none'}, {'display': 'inline-block'}, 0, 0
+
+    else:
+        return {'display': 'inline-block'}, {'display': 'none'}, 0, 0
+
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
