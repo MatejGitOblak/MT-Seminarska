@@ -8,8 +8,11 @@ import json
 import numpy as np
 import geojson
 from functions1 import *
+import copy
+import plotly.graph_objects as go
 
 odjemalci_dict = load_and_preprocess_odjemalci()
+dejavnosti_dict = load_and_preprocess_dejavnosti()
 
 map_df = odjemalci_dict['df_map']
 
@@ -35,7 +38,8 @@ fig.update_geos(fitbounds="locations", visible=False)
 fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
-        geo=dict(bgcolor= 'rgba(0,0,0,0)'))
+        geo=dict(bgcolor= 'rgba(0,0,0,0)'),
+        )
 
 fig1 = px.choropleth(map_df.loc[map_df["District"] == "Ljubljana"],
                     geojson=data, 
@@ -49,7 +53,7 @@ fig1.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         geo=dict(bgcolor= 'rgba(0,0,0,0)'),
-        coloraxis_showscale=False)
+        coloraxis_showscale=False,)
 
 d = {'Vrsta': ["Gospodinjstvo", "industrija"],
         'Poraba v MWh': [
@@ -65,16 +69,14 @@ fig2.update_layout(
 )
 
 def generate_list_item(obcina, gosp, ind):
-    st = "Gospodinjstva: %.2f Industrija: %.2f" % (float(gosp), float(ind))
+    st = "Gospodinjstva: %.2f MWh" % float(gosp)
+    st1 = "Industrija: %.2f MWh" % float(ind)
     return html.Div(className="obcina-div",
                     children=[
                                 html.H3(obcina),
-                                html.P(st)
+                                html.P(st),
+                                html.P(st1)
                             ])
-
-li1 = list(odjemalci_dict['skupaj']['OBČINE'])
-li2 = list(odjemalci_dict['gospodinjstvo']["Poraba"]/1000)
-li3 = list(odjemalci_dict['industrija']["Poraba"]/1000)
 
 app = Dash(__name__)
 
@@ -123,7 +125,11 @@ app.layout = html.Div(className="main-div", children=[
         [
             html.Div(
                 className="list-group",
-                children=[generate_list_item(li1[i], li2[i], li3[i]) for i in range(len(li1))],
+                children=[generate_list_item(
+                    list(odjemalci_dict['skupaj']['OBČINE'])[i], 
+                    list(odjemalci_dict['gospodinjstvo']["Poraba"]/1000)[i], 
+                    list(odjemalci_dict['industrija']["Poraba"]/1000)[i]
+                    ) for i in range(len(list(odjemalci_dict['skupaj']['OBČINE'])))],
             ),
         ]
         ),
