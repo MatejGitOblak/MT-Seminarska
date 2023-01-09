@@ -51,7 +51,7 @@ body {
             .div1-izbira {
 
                 display: grid;
-                grid-template-columns: calc(100%/3) calc(100%/3) calc(100%/3);
+                grid-template-columns: 50% 50%;
                 grid-row-start: 1;
                 grid-row-end: 2;
 
@@ -63,16 +63,21 @@ body {
                 display: none;
             }
 
-            .izbira-občine {
-                grid-row-start: 2;
-                grid-row-end: 3;
-                display: inline-block;
-            }
-
             .izbira-dejavnosti {
                 grid-row-start: 2;
                 grid-row-end: 3;
                 display: none;
+                padding-left: 10px;
+                padding-right: 10px;
+
+                .checklist {
+                    overflow-y: scroll;
+                    height: 120px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    text-align: left;
+                }
             }
         }
         .div1:hover {
@@ -83,6 +88,8 @@ body {
             box-shadow: var(--shadow1);
             background: var(--background1);
             display: inline-block;
+            padding-left: 20px;
+            padding-right: 20px;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
             margin-bottom: 15px;
@@ -94,29 +101,7 @@ body {
             grid-column-end: 2;
             grid-row-start: 2;
             grid-row-end: 3;
-
-            .stat-podatki {
-                display: grid;
-                width: 100%;
-                grid-template-columns: 50% 50%;
-                text-align: center;
-
-                .stat-podatki1 {
-                    grid-column-start: 1;
-                    grid-column-end: 2;
-
-                    display: inline-block;
-    
-                }
-
-                .stat-podatki2 {
-                    grid-column-start: 2;
-                    grid-column-end: 3;
-
-                    display: inline-block;
-                }
-
-            }
+                
         }
         .div2:hover {
             box-shadow: var(--shadow2);
@@ -187,7 +172,8 @@ body {
         .div5 {
             box-shadow: var(--shadow1);
             background: var(--background1);
-            display: inline-block;
+            display: grid;
+            grid-template-columns: 50% 50%;
             transition: all 0.2s ease-in-out;
             margin-top: 15px;
             margin-bottom: 15px;
@@ -201,6 +187,14 @@ body {
             grid-row-end: 4;
 
             .graph2 {
+                grid-column-start: 1;
+                grid-column-end: 2;
+                height: 100%;
+            }
+
+            .graph2_2 {
+                grid-column-start: 2;
+                grid-column-end: 3;
                 height: 100%;
             }
         }

@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 :root {
   --background1: #F9FAFC;
@@ -46,7 +45,7 @@ body .main-div .div1 {
 }
 body .main-div .div1 .div1-izbira {
   display: grid;
-  grid-template-columns: 33.3333333333% 33.3333333333% 33.3333333333%;
+  grid-template-columns: 50% 50%;
   grid-row-start: 1;
   grid-row-end: 2;
 }
@@ -55,15 +54,20 @@ body .main-div .div1 .izbira-podatkov {
   grid-row-end: 3;
   display: none;
 }
-body .main-div .div1 .izbira-občine {
-  grid-row-start: 2;
-  grid-row-end: 3;
-  display: inline-block;
-}
 body .main-div .div1 .izbira-dejavnosti {
   grid-row-start: 2;
   grid-row-end: 3;
   display: none;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+body .main-div .div1 .izbira-dejavnosti .checklist {
+  overflow-y: scroll;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 body .main-div .div1:hover {
   box-shadow: var(--shadow2);
@@ -72,6 +76,8 @@ body .main-div .div2 {
   box-shadow: var(--shadow1);
   background: var(--background1);
   display: inline-block;
+  padding-left: 20px;
+  padding-right: 20px;
   transition: all 0.2s ease-in-out;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -82,22 +88,6 @@ body .main-div .div2 {
   grid-column-end: 2;
   grid-row-start: 2;
   grid-row-end: 3;
-}
-body .main-div .div2 .stat-podatki {
-  display: grid;
-  width: 100%;
-  grid-template-columns: 50% 50%;
-  text-align: center;
-}
-body .main-div .div2 .stat-podatki .stat-podatki1 {
-  grid-column-start: 1;
-  grid-column-end: 2;
-  display: inline-block;
-}
-body .main-div .div2 .stat-podatki .stat-podatki2 {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  display: inline-block;
 }
 body .main-div .div2:hover {
   box-shadow: var(--shadow2);
@@ -159,7 +149,8 @@ body .main-div .div4 .graph {
 body .main-div .div5 {
   box-shadow: var(--shadow1);
   background: var(--background1);
-  display: inline-block;
+  display: grid;
+  grid-template-columns: 50% 50%;
   transition: all 0.2s ease-in-out;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -172,6 +163,13 @@ body .main-div .div5 {
   grid-row-end: 4;
 }
 body .main-div .div5 .graph2 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  height: 100%;
+}
+body .main-div .div5 .graph2_2 {
+  grid-column-start: 2;
+  grid-column-end: 3;
   height: 100%;
 }
 body .main-div .div5:hover {

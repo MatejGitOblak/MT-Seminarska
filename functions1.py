@@ -69,11 +69,27 @@ def load_and_preprocess_odjemalci():
     return odjemalci_dict
 
 def load_and_preprocess_dejavnosti():
-    df_dejavnosti = pd.read_csv("data/podatki_dejavnosti.csv", delimiter=",", encoding="windows-1250")
+    df = pd.read_csv("data/podatki_dejavnosti.csv", delimiter=",", encoding="windows-1250")
+    df = df.loc[(df["OBČINE"] != "SLOVENIJA") & (df["OBČINE"] != "Neznano") & (df['SKD DEJAVNOST'] != 'SKD Dejavnost - SKUPAJ') & (df['SKD DEJAVNOST'] != 'X Neznano')]
+    dejavnosti = list(df["SKD DEJAVNOST"].unique())
+    obcine = list(df['OBČINE'].unique())
+    df = df.rename(columns={'2021 (začasni podatki)': 'Poraba'})
     dejavnosti_dict = {}
-
-    for i in range(23, 45):
-        df = df_dejavnosti[i:-i:+i]
-        dejavnosti_dict[str(df_dejavnosti.iloc[i]['SKD DEJAVNOST'])[2:]] = df
-
+    
+    for dejavnost in dejavnosti:
+        df1 = df.loc[df["SKD DEJAVNOST"] == dejavnost].drop(columns=("SKD DEJAVNOST"))
+        obcine = []
+        for obcina in list(df1["OBČINE"]):
+            if "/" in obcina:
+                obcina = obcina.split("/")[0]
+            obcine.append(obcina)
+        df1["OBČINE"] = obcine
+        if df1["Poraba"].sum() != 0:
+            dejavnosti_dict[" ".join(dejavnost.split(" ")[1:])] = df1
     return dejavnosti_dict
+
+def calculate_sums_dejavnosti(list_dejavnosti, dejavnosti_d):
+    seznami = []
+    for dejavnost in list_dejavnosti:
+        seznami.append(list(dejavnosti_d[dejavnost]["Poraba"].values))
+    return list(sum(map(np.array, np.array(seznami))))
