@@ -51,10 +51,9 @@ body {
             .div1-izbira {
 
                 display: grid;
-                grid-template-columns: 50% 50%;
+                grid-template-columns: calc(100%/3) calc(100%/3) calc(100%/3);
                 grid-row-start: 1;
                 grid-row-end: 2;
-
 
             }
 
@@ -68,6 +67,12 @@ body {
                 grid-row-start: 2;
                 grid-row-end: 3;
                 display: inline-block;
+            }
+
+            .izbira-dejavnosti {
+                grid-row-start: 2;
+                grid-row-end: 3;
+                display: none;
             }
         }
         .div1:hover {

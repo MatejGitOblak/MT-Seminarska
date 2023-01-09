@@ -103,6 +103,7 @@ app.layout = html.Div(className="main-div", children=[
         html.Div(className="div1-izbira", children=[
             html.Button(id="podatki", className="podatki", children=["Izbor podatkov"]),
             html.Button(id="občine", className="občine", children=["Primerjava občin"]),
+            html.Button(id="dejavnosti", className="dejavnosti", children=["Izbira dejavnosti"]),
         ]),
         html.Div(id="izbira-podatkov", className="izbira-podatkov", children=[
             html.H2("Izbor podatkov"),
@@ -118,6 +119,18 @@ app.layout = html.Div(className="main-div", children=[
         ),
         html.Div(id="izbira-občine", className="izbira-občine", children=[
             html.H2("Primerjava občine"),
+            dbc.RadioItems(
+                    id='radio-občine',
+                    options=[
+                        {'label': 'Občina 1', 'value': 1},
+                        {'label': 'Občina 2', 'value': 2}
+                    ],
+                    value=1,
+                    inline=True
+            )]
+        ),
+        html.Div(id="izbira-dejavnosti", className="izbira-dejavnosti", children=[
+            html.H2("Izbira dejavnosti"),
             dbc.RadioItems(
                     id='radio-občine',
                     options=[
@@ -249,28 +262,36 @@ def do_smth(figure, radio):
     [
         Output('izbira-podatkov', 'style'),
         Output('izbira-občine', 'style'),
+        Output('izbira-dejavnosti', 'style'),
         Output('podatki', 'n_clicks'),
-        Output('občine', 'n_clicks')
+        Output('občine', 'n_clicks'),
+        Output('dejavnosti', 'n_clicks')
     ],
     [
         Input('podatki', 'n_clicks'),
-        Input('občine', 'n_clicks')
+        Input('občine', 'n_clicks'),
+        Input('dejavnosti', 'n_clicks')
     ]
 )
 
-def change_style(podatki, občine):
+def change_style(podatki, občine, dejavnosti):
     if podatki is not None:
         if podatki == 1:
             podatki = 0
-            return {'display': 'inline-block'}, {'display': 'none'}, 0, 0
+            return {'display': 'inline-block'}, {'display': 'none'}, {'display': 'none'}, 0, 0, 0
 
     if občine is not None:
         if občine == 1:
             občine = 0
-            return {'display': 'none'}, {'display': 'inline-block'}, 0, 0
+            return {'display': 'none'}, {'display': 'inline-block'}, {'display': 'none'}, 0, 0, 0
+
+    if dejavnosti is not None:
+        if dejavnosti == 1:
+            dejavnosti = 0
+            return {'display': 'none'}, {'display': 'none'}, {'display': 'inline-block'}, 0, 0, 0
 
     else:
-        return {'display': 'inline-block'}, {'display': 'none'}, 0, 0
+        return {'display': 'inline-block'}, {'display': 'none'}, {'display': 'none'}, 0, 0, 0
 
 
 
