@@ -1,15 +1,9 @@
-from dash import Dash, html, dcc, dash, Input, Output, State
+from dash import Dash, html, dcc, Input, Output
 import dash_bootstrap_components as dbc
-import matplotlib.pyplot as plt
 import plotly.express as px
 import pandas as pd
-import geopandas as gpd
 import json
-import numpy as np
-import geojson
 from functions1 import *
-import copy
-import plotly.graph_objects as go
 
 clicked_obcina = 'Ljubljana'
 izbrana_obcina = 'Ljubljana'
@@ -199,7 +193,6 @@ app.layout = html.Div(className="main-div", children=[
 def do_smth(checklist, radio_odjemalci, drop1, drop2):
     global obcina1, obcina2, izbrana_obcina, ime_obcina1, ime_obcina2, odjemalci_dict, map_df, data, fig
     global clicked_obcina, bar_fig_right, bar_fig_left
-    print(drop1)
     if radio_odjemalci == 1:
         if drop1 is not None:
             obcina1 = px.choropleth(map_df.loc[map_df["District"] == drop1],
