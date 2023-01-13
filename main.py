@@ -118,7 +118,7 @@ app.layout = html.Div(className="main-div", children=[
             )]
         ),
         html.Div(id="izbira-dejavnosti", className="izbira-dejavnosti", children=[
-            html.H2("Izbira dejavnosti"),
+            html.H4("Izbira dejavnosti"),
             dcc.Checklist(
                 className="checklist",
                 id="checklist",
@@ -127,23 +127,25 @@ app.layout = html.Div(className="main-div", children=[
         )
     ]),
     html.Div(className="div2", children=[
-        html.H4("Najdi občino"),
-        html.H5("OBČINA 1"),
-        dcc.Dropdown(
-            className="dropdown1",
-            options=list(odjemalci_dict['skupaj']['OBČINE']),
-            id = 'dropdown1',),
-        html.H5("OBČINA 2"),
-        dcc.Dropdown(
-            className="dropdown1",
-            options=list(odjemalci_dict['skupaj']['OBČINE']),
-            id = 'dropdown2',)
+        html.Div(className="div2_2", children=[
+            html.H5("OBČINA 1"),
+            dcc.Dropdown(
+                className="dropdown1",
+                options=list(odjemalci_dict['skupaj']['OBČINE']),
+                id = 'dropdown1',),
+            html.H5("OBČINA 2"),
+            dcc.Dropdown(
+                className="dropdown1",
+                options=list(odjemalci_dict['skupaj']['OBČINE']),
+                id = 'dropdown2',)
+        ])
+        
     ]),
     html.Div(className="div3", children=[
         html.H3(id="obcina-ime1", children=["Ljubljana"]),
         dcc.Graph(className="graph1", id='graph1', figure=obcina1, config={'displayModeBar': False})
     ]),
-    html.Div(className="div4", children=[
+    html.Div(className="div4", id='div4', children=[
         html.H3(children=["Slovenija"]),
         dcc.Graph(className="graph", id='graph', figure=fig, config={'displayModeBar': False})
     ]),
@@ -399,5 +401,27 @@ def change_style(podatki, dejavnosti):
     else:
         return {'display': 'inline-block'}, {'display': 'none'}, 0, 0
 
+
+@app.callback(
+    [
+        Output('div4', 'style'),
+        Output('div5', 'style'),
+        Output('div5', 'n_clicks'),
+        Output('bar_graph_left', 'style'),
+        Output('bar_graph_right', 'style'),
+    ],
+    [
+        Input('div5', 'n_clicks'),
+    ]
+)
+
+def neki(n_clicks):
+    if n_clicks == 1:
+        return {'display': 'none'}, {'grid-row-start': '1', 'grid-row-end': '4'}, 1, {'height': '700px'}, {'height': '700px'}
+    if n_clicks == 2:
+        return {'grid-row-start': '1', 'grid-row-end': '3', 'display': 'grid'}, {'grid-row-start': '3', 'grid-row-end': '4', 'display': 'grid'}, 0, {'height': '210px'}, {'height': '210px'}
+    else:
+        return {'grid-row-start': '1', 'grid-row-end': '3', 'display': 'grid'}, {'grid-row-start': '3', 'grid-row-end': '4', 'display': 'grid'}, 0, {'height': '210px'}, {'height': '210px'}
+
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

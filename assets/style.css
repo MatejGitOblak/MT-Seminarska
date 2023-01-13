@@ -49,6 +49,18 @@ body .main-div .div1 .div1-izbira {
   grid-row-start: 1;
   grid-row-end: 2;
 }
+body .main-div .div1 .div1-izbira .podatki {
+  border-radius: 5px 0px 5px 0px;
+  border-color: #F9FAFC;
+  background: #F9FAFC;
+  font-family: Poppins, sans-serif;
+}
+body .main-div .div1 .div1-izbira .dejavnosti {
+  border-radius: 0px 5px 0px 5px;
+  border-color: #F9FAFC;
+  background: #F9FAFC;
+  font-family: Poppins, sans-serif;
+}
 body .main-div .div1 .izbira-podatkov {
   grid-row-start: 2;
   grid-row-end: 3;
@@ -63,11 +75,14 @@ body .main-div .div1 .izbira-dejavnosti {
 }
 body .main-div .div1 .izbira-dejavnosti .checklist {
   overflow-y: scroll;
-  height: 120px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
+}
+body .main-div .div1 .izbira-dejavnosti .checklist::-webkit-scrollbar {
+  display: none;
 }
 body .main-div .div1:hover {
   box-shadow: var(--shadow2);
@@ -88,6 +103,9 @@ body .main-div .div2 {
   grid-column-end: 2;
   grid-row-start: 2;
   grid-row-end: 3;
+}
+body .main-div .div2 .div2_2 {
+  height: 200px;
 }
 body .main-div .div2:hover {
   box-shadow: var(--shadow2);
@@ -145,6 +163,8 @@ body .main-div .div4 .graph {
   grid-row-start: 2;
   grid-row-end: 3;
   display: inline-block;
+  height: 350px;
+  scale: 1 1.4;
 }
 body .main-div .div5 {
   box-shadow: var(--shadow1);
