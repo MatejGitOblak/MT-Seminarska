@@ -1,132 +1,95 @@
 import pandas as pd
+import dash
+import numpy as np
+import matplotlib.pyplot as plt
+import geopandas as gpd
+import plotly.express as px
+import json
+import geojson
+import math
 
-df_prebivalci = pd.read_csv("data/podatki_starost_prebivalcev.csv", delimiter=",", encoding="windows-1250")
-df_dejavnosti = pd.read_csv("data/podatki_po_dejavnostih.csv", delimiter=",", encoding="windows-1250")
-df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
+def load_and_preprocess_odjemalci():
+    df_odjemalci = pd.read_csv("data/podatki_vrsta_odjemalca.csv", delimiter=",", encoding="windows-1250")
+    df_starost_prebivalcev = pd.read_csv("data/podatki_starost_prebivalcev.csv", delimiter=",", encoding="windows-1250")
 
+    df_map_slovenija = gpd.read_file('slovenija_map/obcine/obcine.shp')
+    df_map_slovenija = df_map_slovenija.to_crs("WGS84")
+    df_map_slovenija = df_map_slovenija.rename({'NAZIV': 'District'}, axis = 'columns')
+    df_map_slovenija = df_map_slovenija.drop(columns = ['EID_OBCINA',  'SIFRA', 'NAZIV_DJ', 'OZNAKA_MES', 'DATUM_SYS'])
+    df_map_slovenija = df_map_slovenija.sort_values('District')
+    df_map_slovenija = df_map_slovenija.reset_index(drop=True)
 
-def izrisi_odjemalci_Slovenija(odjemalci, leto):
-    df_odjemalci = odjemalci.copy()
-    df=df_odjemalci[::+3]
-    df = df[1:-1]
-    df = df.drop("VRSTA ODJEMALCA", axis=1)
-    obcine = {df["OBČINE"][i]:i for i in df.index}
+    df_odjemalci = df_odjemalci.drop(df_odjemalci.columns[[2,3,4,5,6,7,8,9,10,11,12,13,26,27,28,29,30,31,32,33,34]], axis=1)
+    df_odjemalci["Poraba"] = df_odjemalci.iloc[:,2:14].sum(axis=1)
+    df_odjemalci = df_odjemalci.drop(df_odjemalci.columns[[1,2,3,4,5,6,7,8,9,10,11,12,13]], axis=1)
 
-    dict_porab = dict()
-    if leto == 2020:
-        vse_2020 = dict(df[df.columns[1:13]].sum(axis=1))
-        dict_porab = dict([(k,[vse_2020[k]]) for k in vse_2020])
-    elif leto == 2021:
-        vse_2021 = dict(df[df.columns[13:25]].sum(axis=1))
-        dict_porab = dict([(k,[vse_2021[k]]) for k in vse_2021])
+    df_odjemalci_skupaj = df_odjemalci[3:-3:+3]
+    df_odjemalci_gospodinjstva = df_odjemalci[4:-3:+3]
+    df_odjemalci_industrija = df_odjemalci[5:-3:+3]
+    df_starost_prebivalcev = df_starost_prebivalcev[1::]
 
-    koncni_dict = dict()
-    for k,v in obcine.items():
-        koncni_dict[k] = dict_porab[v]
+    df_odjemalci_skupaj = df_odjemalci_skupaj.sort_values('OBČINE')
+    df_odjemalci_gospodinjstva = df_odjemalci_gospodinjstva.sort_values('OBČINE')
+    df_odjemalci_industrija = df_odjemalci_industrija.sort_values('OBČINE')
+    df_starost_prebivalcev = df_starost_prebivalcev.sort_values('OBČINE')
+
+    obcine = []
+    for obcina in list(df_odjemalci_skupaj["OBČINE"]):
+        if "/" in obcina:
+            obcina = obcina.split("/")[0]
+        obcine.append(obcina)
+
+    df_odjemalci_skupaj["OBČINE"] = obcine
+    df_odjemalci_gospodinjstva["OBČINE"] = obcine
+    df_odjemalci_industrija["OBČINE"] = obcine
+    df_starost_prebivalcev["OBČINE"] = obcine
+    df_map_slovenija["District"] = obcine
+
+    df_odjemalci_skupaj = df_odjemalci_skupaj.reset_index(drop=True)
+    df_odjemalci_gospodinjstva = df_odjemalci_gospodinjstva.reset_index(drop=True)
+    df_odjemalci_industrija = df_odjemalci_industrija.reset_index(drop=True)
+    df_starost_prebivalcev = df_starost_prebivalcev.reset_index(drop=True)
+
+    df_starost_prebivalcev.drop(['2020H1 Starost - SKUPAJ', '2020H2 Starost - SKUPAJ', '2021H1 Starost - SKUPAJ'], axis=1, inplace=True)
+    df_starost_prebivalcev.rename(columns={'2021H2 Starost - SKUPAJ':'POPULACIJA'}, inplace=True)
+
+    df_odjemalci_gospodinjstva_norm = pd.DataFrame({
+                                                    'OBČINE': df_odjemalci_gospodinjstva['OBČINE'],
+                                                    'Poraba': df_odjemalci_gospodinjstva["Poraba"]/df_starost_prebivalcev["POPULACIJA"]
+                                                    })
+
+    odjemalci_dict = {
+        'skupaj': df_odjemalci_skupaj,
+        'gospodinjstvo': df_odjemalci_gospodinjstva,
+        'industrija': df_odjemalci_industrija,
+        'gospodinjstvo_norm': df_odjemalci_gospodinjstva_norm,
+        'df_map': df_map_slovenija
+    }
+
+    return odjemalci_dict
+
+def load_and_preprocess_dejavnosti():
+    df = pd.read_csv("data/podatki_dejavnosti.csv", delimiter=",", encoding="windows-1250")
+    df = df.loc[(df["OBČINE"] != "SLOVENIJA") & (df["OBČINE"] != "Neznano") & (df['SKD DEJAVNOST'] != 'SKD Dejavnost - SKUPAJ') & (df['SKD DEJAVNOST'] != 'X Neznano')]
+    dejavnosti = list(df["SKD DEJAVNOST"].unique())
+    obcine = list(df['OBČINE'].unique())
+    df = df.rename(columns={'2021 (začasni podatki)': 'Poraba'})
+    dejavnosti_dict = {}
     
-    return pd.DataFrame.from_dict(koncni_dict).transpose()
+    for dejavnost in dejavnosti:
+        df1 = df.loc[df["SKD DEJAVNOST"] == dejavnost].drop(columns=("SKD DEJAVNOST"))
+        obcine = []
+        for obcina in list(df1["OBČINE"]):
+            if "/" in obcina:
+                obcina = obcina.split("/")[0]
+            obcine.append(obcina)
+        df1["OBČINE"] = obcine
+        if df1["Poraba"].sum() != 0:
+            dejavnosti_dict[" ".join(dejavnost.split(" ")[1:])] = df1
+    return dejavnosti_dict
 
-
-def izrisi_odjemalci_gospodinjstva(odjemalci, leto):
-    df_odjemalci = odjemalci.copy()
-    df=df_odjemalci[1::+3]
-    df = df[1:-1]
-    df = df.drop("VRSTA ODJEMALCA", axis=1)
-    obcine = {df["OBČINE"][i]:i for i in df.index}
-
-    dict_porab = dict()
-    if leto == 2020:
-        vse_2020 = dict(df[df.columns[1:13]].sum(axis=1))
-        dict_porab = dict([(k,[vse_2020[k]]) for k in vse_2020])
-    elif leto == 2021:
-        vse_2021 = dict(df[df.columns[13:25]].sum(axis=1))
-        dict_porab = dict([(k,[vse_2021[k]]) for k in vse_2021])
-
-    koncni_dict = dict()
-    for k,v in obcine.items():
-        koncni_dict[k] = dict_porab[v]
-
-    return pd.DataFrame.from_dict(koncni_dict).transpose()
-
-def izrisi_odjemalci_poslovni_objekti(odjemalci, leto):
-    df_odjemalci = odjemalci.copy()
-    df=df_odjemalci[2::+3]
-    df = df[1:-1]
-    df = df.drop("VRSTA ODJEMALCA", axis=1)
-    obcine = {df["OBČINE"][i]:i for i in df.index}
-
-    dict_porab = dict()
-    if leto == 2020:
-        vse_2020 = dict(df[df.columns[1:13]].sum(axis=1))
-        dict_porab = dict([(k,[vse_2020[k]]) for k in vse_2020])
-    elif leto == 2021:
-        vse_2021 = dict(df[df.columns[13:25]].sum(axis=1))
-        dict_porab = dict([(k,[vse_2021[k]]) for k in vse_2021])
-
-    koncni_dict = dict()
-    for k,v in obcine.items():
-        koncni_dict[k] = dict_porab[v]
-
-    return pd.DataFrame.from_dict(koncni_dict).transpose()
-
-
-def uredi_data_prebivalci(prebivalci_data, mapdf):
-    df = prebivalci_data.copy()
-    df = df.rename({'OBČINE': 'District'}, axis = 'columns')
-    df = df.drop(df.index[0])
-
-    df.index = mapdf.index
-    df["District"] = mapdf["District"]
-
-    df["2020_skupaj"] = ((df["2020H1 Starost - SKUPAJ"] + df["2020H2 Starost - SKUPAJ"]) / 2).astype(int)
-    df["2021_skupaj"] = ((df["2021H1 Starost - SKUPAJ"] + df["2021H2 Starost - SKUPAJ"]) / 2).astype(int)
-    df = df.drop(columns = ["2021H1 Starost - SKUPAJ",  '2021H2 Starost - SKUPAJ', '2020H1 Starost - SKUPAJ', '2020H2 Starost - SKUPAJ'])
-
-    return df
-
-def izracun_normalizacije_Slovenija(mapdf, leto):
-    global df_prebivalci, df_odjemalci
-
-    urejeni = uredi_data_prebivalci(df_prebivalci, mapdf)
-    df = izrisi_odjemalci_Slovenija(df_odjemalci, leto)
-    df.insert(0,'District', df.index)
-    df.index = mapdf.index
-    if leto == 2020:
-        df["Poraba"] = round(df[0] / urejeni["2020_skupaj"],2)
-    elif leto == 2021:
-        df["Poraba"] = round(df[0] / urejeni["2021_skupaj"],2)
-
-    df = df.drop(columns={0})
-    return df
-
-def izracun_normalizacije_gospodinjstva(mapdf, leto):
-    global df_prebivalci, df_odjemalci
-
-    urejeni = uredi_data_prebivalci(df_prebivalci, mapdf)
-    df = izrisi_odjemalci_gospodinjstva(df_odjemalci, leto)
-
-    df.insert(0,'District', df.index)
-    df.index = mapdf.index
-    if leto == 2020:
-        df["Poraba"] = round(df[0] / urejeni["2020_skupaj"],2)
-    elif leto == 2021:
-        df["Poraba"] = round(df[0] / urejeni["2021_skupaj"],2)
-
-    df = df.drop(columns={0})
-    return df
-
-def izracun_normalizacije_poslovni_objekti(mapdf, leto):
-    global df_prebivalci, df_odjemalci
-
-    urejeni = uredi_data_prebivalci(df_prebivalci, mapdf)
-    df = izrisi_odjemalci_poslovni_objekti(df_odjemalci, leto)
-
-    df.insert(0,'District', df.index)
-    df.index = mapdf.index
-    if leto == 2020:
-        df["Poraba"] = round(df[0] / urejeni["2020_skupaj"],2)
-    elif leto == 2021:
-        df["Poraba"] = round(df[0] / urejeni["2021_skupaj"],2)
-
-    df = df.drop(columns={0})
-    return df
+def calculate_sums_dejavnosti(list_dejavnosti, dejavnosti_d):
+    seznami = []
+    for dejavnost in list_dejavnosti:
+        seznami.append(list(dejavnosti_d[dejavnost]["Poraba"].values))
+    return list(sum(map(np.array, np.array(seznami))))

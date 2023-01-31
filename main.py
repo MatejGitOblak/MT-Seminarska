@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 import json
-from functions1 import *
+from functions import *
 
 clicked_obcina = 'Ljubljana'
 izbrana_obcina = 'Ljubljana'
