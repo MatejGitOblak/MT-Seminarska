@@ -424,4 +424,4 @@ def neki(n_clicks):
         return {'grid-row-start': '1', 'grid-row-end': '3', 'display': 'grid'}, {'grid-row-start': '3', 'grid-row-end': '4', 'display': 'grid'}, 0, {'height': '210px'}, {'height': '210px'}
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=False, port=3030)

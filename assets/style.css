@@ -163,8 +163,6 @@ body .main-div .div4 .graph {
   grid-row-start: 2;
   grid-row-end: 3;
   display: inline-block;
-  height: 350px;
-  scale: 1 1.4;
 }
 body .main-div .div5 {
   box-shadow: var(--shadow1);
